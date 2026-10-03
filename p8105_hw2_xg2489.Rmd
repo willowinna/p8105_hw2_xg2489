@@ -16,4 +16,8 @@ subway_df =
       "NO" ~ FALSE
       )
   )
+dim(subway_df)
 ```
+
+The orginal dataset "NYC_Transit_Subway_Entrance_And_Exit_Data.csv" has 32 variables related to each entrance and exit for each subway station in NYC. The raw data has 1868 rows and 32 columns. Column names is standardized  through "janitor::clean_names", key variables are kept and "entry" is converted from a character variable into a logical variable using "case_match". After cleaning the data , This "subway_df" dataset contains 19 variables including line, station name, station latitude & longitude, routes served (from route 1 to route 11), entry, vending, entrance type, and ADA compliance. The size of dataset is 1868 rows and 19 columns. This data is not tidy because the routes served by a station are spread across 11 separate columns with too many null values and thsy should be stored as a single variable. 
+
