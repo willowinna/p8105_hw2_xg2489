@@ -2,9 +2,12 @@
 title: "p8105_hw2_xg2489"
 output: github_document
 ---
-
 ```{r}
 library(tidyverse)
+```
+
+## Question 1
+```{r}
 subway_df = 
   read_csv(file  = "NYC_Transit_Subway_Entrance_And_Exit_Data.csv") |>
   janitor::clean_names() |>
@@ -71,3 +74,7 @@ subway_route_df |>
 ```
 
 There are 60 stations serving the A train and 17 are ADA compliant.
+
+## Question 2
+
+
