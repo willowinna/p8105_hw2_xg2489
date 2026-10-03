@@ -21,3 +21,53 @@ dim(subway_df)
 
 The orginal dataset "NYC_Transit_Subway_Entrance_And_Exit_Data.csv" has 32 variables related to each entrance and exit for each subway station in NYC. The raw data has 1868 rows and 32 columns. Column names is standardized  through "janitor::clean_names", key variables are kept and "entry" is converted from a character variable into a logical variable using "case_match". After cleaning the data , This "subway_df" dataset contains 19 variables including line, station name, station latitude & longitude, routes served (from route 1 to route 11), entry, vending, entrance type, and ADA compliance. The size of dataset is 1868 rows and 19 columns. This data is not tidy because the routes served by a station are spread across 11 separate columns with too many null values and thsy should be stored as a single variable. 
 
+```{r}
+#numbers of distinct stations
+subway_df |>
+  select(line, station_name) |>
+  distinct() |>
+  nrow()
+
+#numbers of ADA compliant stations
+subway_df |>
+  filter(ada == TRUE) |>
+  select(line, station_name) |> 
+  distinct() |> nrow()
+
+#proportion of station entrances / exits without vending allow entrance
+subway_df |>
+  filter(vending == "NO") |>
+  pull(entry) |>
+  mean()
+
+```
+
+There exists 465 distinct stations and 84 of them are ADA compliant stations. The proportion of station entrances / exits without vending allow entrance is 0.377 approximately.
+
+
+```{r}
+subway_route_df =
+  subway_df |>
+  mutate(across(route1:route11, as.character)) |>
+  pivot_longer(
+    route1:route11, 
+    names_to = "route_num",
+    values_to = "route_name")
+
+#distinct stations serve the A train
+subway_route_df |> 
+  filter(route_name == "A") |>
+  select(line, station_name) |> 
+  distinct() |> 
+  nrow()    
+
+#distinct stations serve the A train and ADA compliant
+subway_route_df |> 
+  filter(route_name == "A", ada == TRUE) |>
+  select(line, station_name) |> 
+  distinct() |> 
+  nrow()     
+
+```
+
+There are 60 stations serving the A train and 17 are ADA compliant.
