@@ -147,3 +147,39 @@ variable indicates which machine the record belongs to. Professor
 Trash Wheel collected a total of `r round(prof_total_weight, 2)` tons
 of trash, and Gwynnda collected `r gwynnda_june_cigg` cigarette butts
 in June 2022.
+
+
+## Question 3
+```{r}
+baseline_df = 
+  read_csv("data_mci/MCI_baseline.csv",skip = 1,na = c("","NA",".")) |>
+  janitor::clean_names() |>
+  filter(is.na(age_at_onset) | age_at_onset >= current_age) |>
+  mutate(
+    sex = case_match(               
+      sex, 1 ~ "male", 0 ~ "female"),
+    apoe4 = case_match(
+      apoe4,1 ~ "carrier", 0 ~ "non_carrier"   
+    )
+  )
+
+mci_num = baseline_df |>
+  filter(!is.na(age_at_onset)) |>
+  nrow()
+
+average_age = baseline_df |>
+  pull(current_age) |>
+  mean() |>
+  round(2)
+
+prop_female = baseline_df |>
+  filter(sex == "female") |>
+  summarise(p = mean(apoe4 == "carrier")) |>
+  pull(p)
+```
+
+
+During the import process, the dataset is imported using skip = 1 because the first row contains variable descriptions. Missing values which are encoded as "." in the orginal dataset are transformed to na argument so that R treats them as NA. Records with an onset age earlier than the baseline age are removed as they do not meet the stated inclusion criteria (i.e. no MCI at baseline). The variables "sex" and "apoe4" are transformed from binary numeric codes into factors ("Female"/"Male" and "Non-carrier"/"Carrier") because they are categorical variables. A total of 483 participants were recruited. After excluding 3 participants who did not meet the inclusion criterion, the cleaned dataset contains 480 participants. The variables are `id`, `current_age`, `sex`, `education`, `apoe4` and `age_at_onset`.
+
+Of the 483 recruited participants, 3 were excluded because they have already developed MCI at baseline. Among the remaining 480 participants who met the inclusion criterion, `r mci_num` developed MCI during follow-up. The average baseline age is `r average_age` and the proportion of women in the study who are APOE4 carriers is `r prop_female`.
+
